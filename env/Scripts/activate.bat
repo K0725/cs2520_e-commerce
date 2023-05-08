@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\ikerg\Desktop\Ecommerce Site\cs2520_e-commerce\env
+set VIRTUAL_ENV=C:\Users\kiddi\OneDrive\Documents\School\cs2520\TeamProject\cs2520_e-commerce\env
 
 if not defined PROMPT set PROMPT=$P$G
 

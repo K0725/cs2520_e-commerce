@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\ikerg\Desktop\Ecommerce Site\cs2520_e-commerce\env"
+VIRTUAL_ENV="C:\Users\kiddi\OneDrive\Documents\School\cs2520\TeamProject\cs2520_e-commerce\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

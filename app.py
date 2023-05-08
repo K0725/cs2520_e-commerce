@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 # when opening the site, users should see a search bar, login button, a shopping cart. Some other potential buttons and features could be recommended
 # selections(random) and some potential filters (sports, clothes, toys)
+# The user can 
 @app.route('/')
 def index():
     # render template is a function from flask that is used to render HTML templates
