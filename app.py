@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, sqlite3
 
 app = Flask(__name__)
 
@@ -10,6 +10,12 @@ app = Flask(__name__)
 def index():
     # render template is a function from flask that is used to render HTML templates
     return render_template('index.html')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
 
 @app.route('/search')
 def search():
