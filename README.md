@@ -12,4 +12,4 @@ STEP3: Activate teh Virtual Env
 STEP4: Install the requirements.txt dependencies: **pip install -r requirements.txt**
 
 
-** when you pushing make sure you don't push the virtual env files**
+**when you pushing make sure you don't push the virtual env files**
