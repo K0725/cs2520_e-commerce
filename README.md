@@ -7,7 +7,7 @@ STEP1: Clone this repository
 
 STEP2: Create Virtual Env in your own machine
 
-STEP3: Activate teh Virtual Env
+STEP3: Activate the Virtual Env
 
 STEP4: Install the requirements.txt dependencies: **pip install -r requirements.txt**
 
