@@ -4,12 +4,15 @@
     <title>My E-commerce Site</title>
 </head>
 <body>
-    <h1>E-commerce Site Name</h1>
+    <h1>E-commerce Site NameTest</h1>
     <h2>Search for Products</h2>
     <form method="GET" action="{{ url_for('search') }}">
         <label for="search">Search:</label>
         <input type="text" id="search" name="query" placeholder="Enter search terms">
         <button type="submit">Search</button>
+    </form>
+    <form method="GET" action="{{ url_for('login') }}">
+        <button type="submit">Login</button>
     </form>
 </body>
 </html>
