@@ -16,8 +16,12 @@ conn.execute('''CREATE TABLE products
 		image TEXT,
 		stock INTEGER,
 		categoryId INTEGER,
-		FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
+		FOREIGN KEY(categoryId) REFERENCES 
+        categories(categoryId)
 		)''')
+
+
+
 #Create Cart Table
 conn.execute('''CREATE TABLE kart
 		(userId INTEGER,
@@ -26,11 +30,11 @@ conn.execute('''CREATE TABLE kart
 		FOREIGN KEY(productId) REFERENCES products(productId)
 		)''')
 
-#Create Category Table
-# conn.execute('''CREATE TABLE categories
-# 		(categoryId INTEGER PRIMARY KEY,
-# 		name TEXT
-# 		)''')
+
+conn.execute('''CREATE TABLE categories
+		(categoryId INTEGER PRIMARY KEY,
+		name TEXT
+		)''')
 
 
 

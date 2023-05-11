@@ -1,22 +1,44 @@
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+import sqlite3, hashlib, os
 
 app = Flask(__name__)
 
-conn =  sqlite3.connect('database.py')
-
-cursor = conn.cursor()
-
-
-# when opening the site, users should see a search bar, login button, a shopping cart. Some other potential buttons and features could be recommended
-# selections(random) and some potential filters (sports, clothes, toys)
-@app.route('/index')
-def index():
-    # render template is a function from flask that is used to render HTML templates
-    return render_template('index.html')
-
-@app.route('/')
+@app.route('/login', methods=['POST'])
 def login():
+    # Get the form data from the request object
+    username = request.form['username']
+    password = request.form['password']
+
+    # Print the value of username to check if it's being passed correctly
+    print(f"Username: {username}")
+
+    # Connect to the SQLite database and create a cursor object
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query the users table in the database to find a user with the submitted username
+    cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
+    user = cursor.fetchone()
+
+    conn.close()
+
+    # If a user with the submitted username was found in the database
+    if user is not None:
+        # Check if the submitted password matches the password in the database
+        if password == user[0]:  # user[0] contains the password value
+            # If the credentials are valid, redirect to the home page
+            return redirect('home.html')
+        else:
+            # If the password is incorrect, re-render the login page with an error message
+            return render_template('login.html', message='Incorrect password. Please try again.')
+    else:
+        # If the user is not found, re-render the login page with an error message
+        return render_template('login.html', message='User not found. Please try again.')
+
+
+@app.route('/', methods=['GET'])
+def login_form():
+    # Render the login page
     return render_template('login.html')
 
 
@@ -48,11 +70,14 @@ def create_user():
         message = 'User created successfully!'
 
         # Return the template with the message variable
-        return render_template('create_user.html', message=message)
+        return redirect(url_for('login_form', message=message))
 
     # If the request method is GET, just render the template without setting the message variable
     return render_template('create_user.html')
 
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 @app.route('/search')
 def search():

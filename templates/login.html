@@ -4,14 +4,22 @@
         <title>userlogin</title>
     </head>
     <body>
-        <h1>Login to Account</h1>
-        <form action="login.php" method="post">
+        <div className="Login">
+            <h1>Login to Account</h1>
+            <form action="/login" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required><br><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
             <input type="submit" value="Submit">
-        </form>
+            </form>
+
+        </div>
+        
         <p>Don't have an account? <a href="/create-user">Create one now!</a></p>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
     </body>
 </html>
