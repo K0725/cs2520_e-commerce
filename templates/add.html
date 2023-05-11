@@ -8,8 +8,9 @@
         <form action="/addItem" method="POST" enctype="multipart/form-data">
         	Name: <input type="text" name="name"><br> 
         	Price: <input type="text" name="price"><br>
-        	Description: <textarea name="description" rows=3 cols="40"></textarea><br>
+        	<!-- Description: <textarea name="description" rows=3 cols="40"></textarea><br> -->
         	Image: <input type="file" name="image"><br>
+			Stocks: <input type="file" name="stocks"><br>
         	Category: <select name="category">
         		{% for row in categories %}
         			<option value="{{row[0]}}">{{row[1]}}</option>
