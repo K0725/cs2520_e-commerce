@@ -1,35 +1,29 @@
 import sqlite3
 
+# Connect to the database
 conn = sqlite3.connect('database.db')
 cursor = conn.cursor()
+"""
+# Add users to the table
+users_data = [
+    (1, 'user1', 'password1'),
+    (2, 'user2', 'password2'),
+    (3, 'user3', 'password3')
+]
 
-# Insert a user into the "users" table
-user_data = (1, 'password123', 'johndoe@example.com', 'John', 'Doe')
-cursor.execute('''INSERT INTO users (userId, password, email, firstName, lastName)
-                  VALUES (?, ?, ?, ?, ?)''', user_data)
-
-
-# Insert a product into the "products" table
-product_data = ('Shirt', 19.99, 'shirt.jpg', 100, 1)
-cursor.execute('''INSERT INTO products (name, price, image, stock, categoryId)
-                  VALUES (?, ?, ?, ?, ?)''', product_data)
+cursor.executemany('''INSERT INTO users (userId, username, password)
+                      VALUES (?, ?, ?)''', users_data)
 
 # Commit the changes
 conn.commit()
-
+"""
+# Retrieve users from the table
 cursor.execute('SELECT * FROM users')
 users = cursor.fetchall()
 
-# Retrieve all products
-cursor.execute('SELECT * FROM products')
-products = cursor.fetchall()
-
+# Print the retrieved users
 for user in users:
-    print (user)
-
-for product in products:
-    print(product)
-
+    print(user)
 
 # Close the connection
 conn.close()
