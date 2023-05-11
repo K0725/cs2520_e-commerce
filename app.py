@@ -27,7 +27,7 @@ def login():
         # Check if the submitted password matches the password in the database
         if password == user[0]:  # user[0] contains the password value
             # If the credentials are valid, redirect to the home page
-            return redirect(url_for('add_product'))
+            return redirect(url_for('search'))
         else:
             # If the password is incorrect, re-render the login page with an error message
             return render_template('login.html', message='Incorrect password. Please try again.')
