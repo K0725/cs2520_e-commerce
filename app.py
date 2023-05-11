@@ -20,6 +20,7 @@ def index():
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    print("login")
     if request.method == 'POST':
         # retrieve the submitted username and password from the form
         username = request.form['username']
@@ -88,15 +89,55 @@ def search():
         return redirect(url_for('search_results', query=query))
     return render_template('search.html')
 
-@app.route('/search-results')
+@app.route('/search-results', methods=['GET'])
 def search_results():
-    query = request.args.get('query')
-    # Perform search logic here
-    results = []
-    return render_template('search_results.html', query=query, results=results)
+    category = request.args.get('category')
+    print("Category:", category)
 
-@app.route('/addProduct')
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Query to filter products based on search query and category
+    query = "SELECT * FROM products WHERE category = ?"
+    cursor.execute(query, (category,))
+    products = cursor.fetchall()
+    
+    print("Products: ", products)
+
+    conn.close()
+
+    return render_template('search.html', products=products)
+
+@app.route('/addProduct', methods=['GET','POST'])
 def add_product():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        price = request.form.get('price')
+        image = request.form.get('image')
+        stock = request.form.get('stock')
+        category = request.form.get('category')
+
+        # Connect to the SQLite database and create a cursor object
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # Insert the user data into the "users" table
+        try:
+            cursor.execute('''INSERT INTO products (name, price, image, stock, category)
+                            VALUES (?, ?, ?, ?, ?)''',
+                            (name, price, image, stock, category))
+        except sqlite3.Error as error:
+            print("Failed to insert data into sqlite table", error)
+
+
+        # Commit the changes to the database and close the connection
+        conn.commit()
+        conn.close()
+
+
+        return redirect(url_for('search'))
+
     return render_template('add.html')
 
 
