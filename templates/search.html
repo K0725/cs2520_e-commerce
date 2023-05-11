@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Search Results - My E-commerce Site</title>
+    <title>Search - My E-commerce Site</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
   <body>
@@ -15,17 +15,40 @@
           <li><a href="/search">Search</a></li>
           <li><a href="/cart">Cart</a></li>
           <li><a href="/checkout">Checkout</a></li>
+          <li><a href="/addProduct">Add Product</a></li>
         </ul>
       </nav>
     </header>
     
-    <!-- Search results -->
-    <h2>Search results for "{{ query }}"</h2>
-    <ul>
-      {% for result in results %}
-        <li>{{ result }}</li>
-      {% endfor %}
-    </ul>
+    <!-- Search bar -->
+    <form action="{{ url_for('search_results') }}" method="GET">
+      <label for="query">Search:</label>
+      <input type="text" id="query" name="query" required>
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="Food">Food</option>
+        <option value="Sports">Sports</option>
+        <option value="School">School</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Entertainment">Entertainment</option>
+      </select>
+      <input type="submit" value="Search">
+    </form>
+
     
+    <!-- Search results -->
+    <div>
+      <h2>Search Results</h2>
+      <ul>
+        {% for product in products %}
+          <li>
+            <h3>{{ product['name'] }}</h3>
+            <p>Price: ${{ product['price'] }}</p>
+            <p>Stock: {{ product['stock'] }}</p>
+            <!-- Add other product details as needed -->
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </body>
 </html>
