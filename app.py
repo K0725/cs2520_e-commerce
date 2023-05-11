@@ -10,12 +10,13 @@ cursor = conn.cursor()
 
 # when opening the site, users should see a search bar, login button, a shopping cart. Some other potential buttons and features could be recommended
 # selections(random) and some potential filters (sports, clothes, toys)
+# The user can 
 @app.route('/index')
 def index():
     # render template is a function from flask that is used to render HTML templates
     return render_template('index.html')
 
-@app.route('/')
+@app.route('/login')
 def login():
     return render_template('login.html')
 
@@ -48,7 +49,7 @@ def create_user():
         message = 'User created successfully!'
 
         # Return the template with the message variable
-        return render_template('create_user.html', message=message)
+        return render_template('search.html', message=message)
 
     # If the request method is GET, just render the template without setting the message variable
     return render_template('create_user.html')
@@ -67,6 +68,10 @@ def search_results():
     # Perform search logic here
     results = []
     return render_template('search_results.html', query=query, results=results)
+
+@app.route('/addProduct')
+def add_product():
+    return render_template('add.html')
 
 
 if __name__ == '__main__':
