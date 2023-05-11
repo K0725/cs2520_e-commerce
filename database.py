@@ -17,13 +17,9 @@ conn.execute('''CREATE TABLE products
 		price REAL,
 		image TEXT,
 		stock INTEGER,
-<<<<<<< HEAD
 		categoryId INTEGER,
 		FOREIGN KEY(categoryId) REFERENCES 
         categories(categoryId)
-=======
-		category TEXT
->>>>>>> d4e449e0612a12b1ef2ccb8aeacd06effe2bf879
 		)''')
 
 
@@ -36,7 +32,6 @@ conn.execute('''CREATE TABLE cart
 		FOREIGN KEY(productId) REFERENCES products(productId)
 		)''')
 
-<<<<<<< HEAD
 
 conn.execute('''CREATE TABLE categories
 		(categoryId INTEGER PRIMARY KEY,
@@ -45,6 +40,4 @@ conn.execute('''CREATE TABLE categories
 
 
 
-=======
->>>>>>> d4e449e0612a12b1ef2ccb8aeacd06effe2bf879
 conn.close()
