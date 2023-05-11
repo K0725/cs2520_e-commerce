@@ -24,18 +24,31 @@
     <form action="{{ url_for('search_results') }}" method="GET">
       <label for="query">Search:</label>
       <input type="text" id="query" name="query" required>
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="Food">Food</option>
+        <option value="Sports">Sports</option>
+        <option value="School">School</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Entertainment">Entertainment</option>
+      </select>
       <input type="submit" value="Search">
     </form>
+
     
     <!-- Search results -->
-    {% if results %}
-      <h2>Search results for "{{ query }}"</h2>
+    <div>
+      <h2>Search Results</h2>
       <ul>
-        {% for result in results %}
-          <li>{{ result }}</li>
+        {% for product in products %}
+          <li>
+            <h3>{{ product['name'] }}</h3>
+            <p>Price: ${{ product['price'] }}</p>
+            <p>Stock: {{ product['stock'] }}</p>
+            <!-- Add other product details as needed -->
+          </li>
         {% endfor %}
       </ul>
-    {% endif %}
-    
+    </div>
   </body>
 </html>

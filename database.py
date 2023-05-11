@@ -17,8 +17,7 @@ conn.execute('''CREATE TABLE products
 		price REAL,
 		image TEXT,
 		stock INTEGER,
-		categoryId INTEGER,
-		FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
+		category TEXT
 		)''')
 #Create Cart Table
 conn.execute('''CREATE TABLE cart
@@ -27,13 +26,5 @@ conn.execute('''CREATE TABLE cart
 		FOREIGN KEY(userId) REFERENCES users(userId),
 		FOREIGN KEY(productId) REFERENCES products(productId)
 		)''')
-
-#Create Category Table
-# conn.execute('''CREATE TABLE categories
-# 		(categoryId INTEGER PRIMARY KEY,
-# 		name TEXT
-# 		)''')
-
-
 
 conn.close()
