@@ -3,7 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-conn =  sqlite3.connect('database.py')
+conn =  sqlite3.connect('database.db')
 
 cursor = conn.cursor()
 
@@ -11,13 +11,39 @@ cursor = conn.cursor()
 # when opening the site, users should see a search bar, login button, a shopping cart. Some other potential buttons and features could be recommended
 # selections(random) and some potential filters (sports, clothes, toys)
 # The user can 
-@app.route('/index')
-def index():
-    # render template is a function from flask that is used to render HTML templates
-    return render_template('index.html')
-
 @app.route('/')
+def index():
+    error_msg = request.args.get('error')
+    error_flag = request.args.get('error_flag')
+    # render template is a function from flask that is used to render HTML templates
+    return render_template('login.html', error=error_msg, error_flag=error_flag)
+
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        # retrieve the submitted username and password from the form
+        username = request.form['username']
+        password = request.form['password']
+
+        # connect to database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # SQL query to select the user with the username
+        query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        cursor.execute(query, (username, password))
+        result = cursor.fetchall()
+
+        # close connection to database
+        conn.close()
+
+        if len(result) > 0:
+            return render_template('search.html')
+        
+        else:
+            error_msg = "Invalid username or password"
+            return redirect(url_for('index', error=error_msg, error_flag=True))
+        
     return render_template('login.html')
 
 
