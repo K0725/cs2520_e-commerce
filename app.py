@@ -10,12 +10,12 @@ cursor = conn.cursor()
 
 # when opening the site, users should see a search bar, login button, a shopping cart. Some other potential buttons and features could be recommended
 # selections(random) and some potential filters (sports, clothes, toys)
-@app.route('/index')
+@app.route('/')
 def index():
     # render template is a function from flask that is used to render HTML templates
     return render_template('index.html')
 
-@app.route('/')
+@app.route('/login')
 def login():
     return render_template('login.html')
 

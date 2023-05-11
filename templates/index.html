@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>My E-commerce Site</title>
-</head>
-<body>
-    <h1>E-commerce Site NameTest</h1>
-    <h2>Search for Products</h2>
-    <form method="GET" action="{{ url_for('search') }}">
-        <label for="search">Search:</label>
-        <input type="text" id="search" name="query" placeholder="Enter search terms">
-        <button type="submit">Search</button>
-    </form>
-    <form method="GET" action="{{ url_for('login') }}">
-        <button type="submit">Login</button>
-    </form>
-</body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1>My E-commerce Site</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/cart">Cart</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main>
+      <h2>Welcome to My E-commerce Site</h2>
+      <p>Feel free to explore our selection of products and add them to your cart.</p>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2023 My E-commerce Site. All rights reserved.</p>
+    </footer>
+
+  </body>
 </html>
