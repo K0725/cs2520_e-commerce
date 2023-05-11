@@ -2,10 +2,14 @@ import sqlite3
 
 conn = sqlite3.connect('database.db')
 
-#Create table login 
+#Create table
 conn.execute('''CREATE TABLE users 
-		(username TEXT PRIMARY KEY, 
-		password TEXT)''')
+		(userId INTEGER PRIMARY KEY, 
+		password TEXT,
+		email TEXT,
+		firstName TEXT,
+		lastName TEXT,
+		)''')
 
 
 #Create Product table
