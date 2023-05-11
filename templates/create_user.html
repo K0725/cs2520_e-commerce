@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create User</title>
+</head>
+<body>
+	<h1>Create User</h1>
+	<form action="/create-user" method="POST">
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username"><br><br>
+
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password"><br><br>
+
+		<input type="submit" value="Create User">
+	</form>
+	{% if message %}
+		<p>{{ message }}</p>
+	{% endif %}
+</body>
+</html>
