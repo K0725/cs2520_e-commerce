@@ -8,7 +8,7 @@ conn.execute('''CREATE TABLE users
 		password TEXT,
 		email TEXT,
 		firstName TEXT,
-		lastName TEXT,
+		lastName TEXT
 		)''')
 
 
@@ -23,7 +23,7 @@ conn.execute('''CREATE TABLE products
 		FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
 		)''')
 #Create Cart Table
-conn.execute('''CREATE TABLE kart
+conn.execute('''CREATE TABLE cart
 		(userId INTEGER,
 		productId INTEGER,
 		FOREIGN KEY(userId) REFERENCES users(userId),

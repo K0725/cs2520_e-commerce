@@ -16,7 +16,7 @@ def index():
     # render template is a function from flask that is used to render HTML templates
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/')
 def login():
     return render_template('login.html')
 
