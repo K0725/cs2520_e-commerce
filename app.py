@@ -91,7 +91,11 @@ def home():
     # Pass the recommended products to the template
     return render_template('home.html', recommended_products=recommended_products)
 
-
+@app.route('/product_details/<int:product_id>')
+def product_details(product_id):
+    # Fetch product details based on product_id
+    # Render a template with the product details
+    pass
 
 @app.route('/search')
 def search():
