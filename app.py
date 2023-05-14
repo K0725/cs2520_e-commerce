@@ -155,6 +155,12 @@ def add_product():
 
     return render_template('add.html')
 
+
+
+@app.route('/cart')
+def cart():
+    return redirect(url_for('cart'))
+
 @app.route('/add-to-cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
@@ -206,6 +212,37 @@ def remove_from_cart(product_id):
     conn.close()
 
     return redirect(url_for('cart'))
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if request.method == 'POST':
+        user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
+
+        # Here, ideally you would handle order processing, like reducing item stock
+        # and saving the order in an 'orders' table in your database.
+
+        return redirect(url_for('confirmation'))
+
+    user_id = request.args.get('userId')  # You need to provide a method to get the logged in user's ID
+
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM cart INNER JOIN products ON cart.productId = products.productId WHERE userId = ?', (user_id,))
+    cart_items = cursor.fetchall()
+
+    total_price = sum(item['price'] for item in cart_items)
+
+    conn.close()
+
+    return render_template('checkout.html', cart_items=cart_items, total_price=total_price)
+
+
+@app.route('/confirmation')
+def confirmation():
+    return render_template('confirmation.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
