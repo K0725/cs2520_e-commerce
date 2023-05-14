@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>userlogin</title>
+        <title>User Login</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     </head>
     <body>
-        <div className="Login">
+        <div class="Login">
             <h1>Login to Account</h1>
             <form action="/login" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            <input type="submit" value="Submit">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                <input type="submit" value="Submit">
             </form>
-
         </div>
         
         <p>Don't have an account? <a href="/create-user">Create one now!</a></p>
