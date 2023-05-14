@@ -137,6 +137,57 @@ def add_product():
 
     return render_template('add.html')
 
+@app.route('/add-to-cart/<int:product_id>', methods=['POST'])
+def add_to_cart(product_id):
+    user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''INSERT INTO cart (userId, productId)
+                        VALUES (?, ?)''',
+                        (user_id, product_id))
+    except sqlite3.Error as error:
+        print("Failed to insert data into sqlite table", error)
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('cart'))
+
+
+@app.route('/cart', methods=['GET'])
+def view_cart():
+    user_id = request.args.get('userId')  # You need to provide a method to get the logged in user's ID
+
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM cart INNER JOIN products ON cart.productId = products.productId WHERE userId = ?', (user_id,))
+    cart_items = cursor.fetchall()
+
+    conn.close()
+
+    return render_template('cart.html', cart_items=cart_items)
+
+
+@app.route('/remove-from-cart/<int:product_id>', methods=['POST'])
+def remove_from_cart(product_id):
+    user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM cart WHERE userId = ? AND productId = ?', (user_id, product_id))
+    except sqlite3.Error as error:
+        print("Failed to delete data from sqlite table", error)
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('cart'))
 
 if __name__ == '__main__':
     app.run(debug=True)
