@@ -7,12 +7,29 @@
     <title>E-commerce website</title>
 </head>
 <body>
+    <h1>Welcome to Our E-commerce Website</h1>
 
+    <!-- Other sections of your homepage go here -->
 
+    <section>
+        <h2>Recommended for You</h2>
+        <div id="recommended-products">
+            {% for product in recommended_products %}
+            <div class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>${{ product.price }}</p>
+                <!-- <a href="{{ url_for('product_details', product_id=product.productId) }}">View Product</a> -->
+                <form action="{{ url_for('add_to_cart', product_id=product.productId) }}" method="post">
+                    <input type="hidden" name="userId" value="{{ user_id }}">  <!-- Assuming you have user_id available in the template -->
+                    <button type="submit">Add to Cart</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 
+    <!-- Other sections of your homepage go here -->
 
-
-
-    
 </body>
 </html>

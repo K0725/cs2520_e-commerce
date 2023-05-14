@@ -27,7 +27,7 @@ def login():
         # Check if the submitted password matches the password in the database
         if password == user[0]:  # user[0] contains the password value
             # If the credentials are valid, redirect to the home page
-            return redirect(url_for('search'))
+             return redirect(url_for('home'))
         else:
             # If the password is incorrect, re-render the login page with an error message
             return render_template('login.html', message='Incorrect password. Please try again.')
@@ -77,7 +77,21 @@ def create_user():
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    # Connect to the SQLite database and create a cursor object
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Query the products table in the database to fetch recommended products
+    cursor.execute('SELECT * FROM products ORDER BY productId DESC LIMIT 5')
+    recommended_products = cursor.fetchall()
+
+    conn.close()
+
+    # Pass the recommended products to the template
+    return render_template('home.html', recommended_products=recommended_products)
+
+
 
 @app.route('/search')
 def search():
