@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f1f1f1;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 50px;
+}
+
+table {
+    width: 80%;
+    margin: 50px auto;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #6c757d;
+    color: #fff;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+.cart-form {
+    display: inline-block;
+}
+
+.btn-green {
+    background-color: #4CAF50; 
+    border: none;
+    color: green;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.btn-green:hover {
+    background-color: white; 
+    color: black; 
+}
+
+.btn-red {
+    background-color: #f44336; /* Red */ 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.btn-red:hover {
+    background-color: white;
+    color: black;
+}
+
+a {
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: 20px auto;
+    background: #28a745;
+    color: #fff;
+    text-align: center;
+    line-height: 50px;
+    text-decoration: none;
+}
+
+a:hover {
+    background: #218838;
+}

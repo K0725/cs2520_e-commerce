@@ -5,17 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}">
 </head>
 <body>
+    
     <h1>Your Shopping Cart</h1>
-
+    
     {% if cart_items %}
     <table>
         <thead>
             <tr>
                 <th>Product Name</th>
                 <th>Price</th>
-                <th>Image</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -24,15 +25,20 @@
             <tr>
                 <td>{{ item.name }}</td>
                 <td>${{ item.price }}</td>
-                <td><img src="{{ item.image }}" alt="{{ item.name }}"></td>
                 <td>
+                    
+
                     <form action="{{ url_for('remove_from_cart', product_id=item.productId) }}" method="post">
-                        <input type="hidden" name="userId" value="{{ user_id }}">  <!-- Assuming you have user_id available in the template -->
-                        <button type="submit">Remove</button>
+                        <input type="hidden" name="userId" value="{{ user_id }}">
+                        <button type="submit" class="btn-red">Remove from Cart</button>
                     </form>
                 </td>
             </tr>
             {% endfor %}
+            
+
+            
+            
         </tbody>
     </table>
     {% else %}

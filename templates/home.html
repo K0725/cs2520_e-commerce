@@ -10,6 +10,30 @@
 </head>
 <body>
     {% include 'navbar.html' %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("form.add-to-cart-form").on('submit', function(e) {
+        e.preventDefault();
+
+        var form = $(this);
+        $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Update the page based on the response
+                    alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    });
+});
+</script>
     
     <h1>Welcome to Our E-commerce Website</h1>
 
@@ -25,9 +49,14 @@
                 <p>${{ product.price }}</p>
                 <!-- <a href="{{ url_for('product_details', product_id=product.productId) }}">View Product</a> -->
                 <form action="{{ url_for('add_to_cart', product_id=product.productId) }}" method="post">
-                    <input type="hidden" name="userId" value="{{ user_id }}">  <!-- Assuming you have user_id available in the template -->
+                    <input type="hidden" name="userId" value="{{ user_id }}">  
+                    
+                </form>
+                <form class="add-to-cart-form" action="{{ url_for('add_to_cart', product_id=product.productId) }}" method="post">
+                    <input type="hidden" name="userId" value="{{ user_id }}">  
                     <button type="submit">Add to Cart</button>
                 </form>
+                
             </div>
             {% endfor %}
         </div>

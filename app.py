@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3, hashlib, os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.secret_key = 'cs2520'  # Replace this with your own secret key
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -9,15 +11,12 @@ def login():
     username = request.form['username']
     password = request.form['password']
 
-    # Print the value of username to check if it's being passed correctly
-    print(f"Username: {username}")
-
     # Connect to the SQLite database and create a cursor object
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
     # Query the users table in the database to find a user with the submitted username
-    cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
+    cursor.execute('SELECT userId, password FROM users WHERE username = ?', (username,))
     user = cursor.fetchone()
 
     conn.close()
@@ -25,9 +24,10 @@ def login():
     # If a user with the submitted username was found in the database
     if user is not None:
         # Check if the submitted password matches the password in the database
-        if password == user[0]:  # user[0] contains the password value
-            # If the credentials are valid, redirect to the home page
-             return redirect(url_for('home'))
+        if password == user[1]:  # user[1] contains the password value
+            # If the credentials are valid, store the user_id in the session and redirect to the home page
+            session['user_id'] = user[0]  # user[0] contains the user_id
+            return redirect(url_for('home'))
         else:
             # If the password is incorrect, re-render the login page with an error message
             return render_template('login.html', message='Incorrect password. Please try again.')
@@ -35,7 +35,7 @@ def login():
         # If the user is not found, re-render the login page with an error message
         return render_template('login.html', message='User not found. Please try again.')
 
-
+##login page
 @app.route('/', methods=['GET'])
 def login_form():
     # Render the login page
@@ -53,6 +53,10 @@ def create_user():
         # Connect to the SQLite database and create a cursor object
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
+
+        # Hash the password using the SHA-256 algorithm
+        # This will make it much more difficult to crack
+        password = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
         # Insert the user data into the "users" table
         try:
@@ -124,14 +128,37 @@ def search_results():
 
     return render_template('search.html', products=products)
 
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/addProduct', methods=['GET','POST'])
 def add_product():
     if request.method == 'POST':
         name = request.form.get('name')
         price = request.form.get('price')
-        image = request.form.get('image')
+        image = request.files['image']
         stock = request.form.get('stock')
         category = request.form.get('category')
+
+        if 'image' in request.files:
+            image = request.files['image']
+            if image.filename != '':  # Ensure filename exists
+                if not allowed_file(image.filename):  # Ensure file type is allowed
+                    return 'File type not allowed! Please upload a valid image file.', 400
+                filename = secure_filename(image.filename)  # Make sure the filename is secure
+                # Define path if not already defined
+                if not os.path.exists('static/images'):
+                    os.makedirs('static/images')
+                image.save(os.path.join('static/images', filename))  # Save the image in the static/images directory
+            else:
+                return 'No selected file'
+        else:
+            return 'No file part'
+
 
         # Connect to the SQLite database and create a cursor object
         conn = sqlite3.connect('database.db')
@@ -141,15 +168,13 @@ def add_product():
         try:
             cursor.execute('''INSERT INTO products (name, price, image, stock, category)
                             VALUES (?, ?, ?, ?, ?)''',
-                            (name, price, image, stock, category))
+                            (name, price, filename, stock, category))  # Save the filename in the database
         except sqlite3.Error as error:
             print("Failed to insert data into sqlite table", error)
-
 
         # Commit the changes to the database and close the connection
         conn.commit()
         conn.close()
-
 
         return redirect(url_for('search'))
 
@@ -157,43 +182,42 @@ def add_product():
 
 
 
-@app.route('/cart')
-def cart():
-    return redirect(url_for('cart'))
-
 @app.route('/add-to-cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-
+    conn = None
     try:
-        cursor.execute('''INSERT INTO cart (userId, productId)
-                        VALUES (?, ?)''',
-                        (user_id, product_id))
-    except sqlite3.Error as error:
-        print("Failed to insert data into sqlite table", error)
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('''INSERT INTO cart (userId, productId) VALUES (?, ?)''', (user_id, product_id))
+        conn.commit()
+    except NameError as e:
+        print(e)
+        if conn:
+            conn.rollback()
+        return jsonify({'success': False, 'message': 'Failed to add item to cart'})
+    finally:
+        if conn:
+            conn.close()
+    return jsonify({'success': True, 'message': 'Item added to cart'})
 
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for('cart'))
 
 
 @app.route('/cart', methods=['GET'])
 def view_cart():
-    user_id = request.args.get('userId')  # You need to provide a method to get the logged in user's ID
+    user_id = request.args.get('userId')  
+    print(f"Fetching cart items for user {user_id}")
 
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-
+    
     cursor.execute('SELECT * FROM cart INNER JOIN products ON cart.productId = products.productId WHERE userId = ?', (user_id,))
+    print(f"SQL statement: SELECT * FROM cart INNER JOIN products ON cart.productId = products.productId WHERE userId = {user_id}")
     cart_items = cursor.fetchall()
 
     conn.close()
-
-    return render_template('cart.html', cart_items=cart_items)
+    return render_template('cart.html', cart_items=cart_items, user_id=user_id)
 
 
 @app.route('/remove-from-cart/<int:product_id>', methods=['POST'])
@@ -211,12 +235,14 @@ def remove_from_cart(product_id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for('cart'))
+    return redirect(url_for('view_cart', userId=user_id))
+
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     if request.method == 'POST':
         user_id = request.form['userId']  # You need to provide a method to get the logged in user's ID
+        
 
         # Here, ideally you would handle order processing, like reducing item stock
         # and saving the order in an 'orders' table in your database.
@@ -224,7 +250,7 @@ def checkout():
         return redirect(url_for('confirmation'))
 
     user_id = request.args.get('userId')  # You need to provide a method to get the logged in user's ID
-
+    print(f"This is user {user_id}")
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -236,7 +262,7 @@ def checkout():
 
     conn.close()
 
-    return render_template('checkout.html', cart_items=cart_items, total_price=total_price)
+    return render_template('checkout.html', cart_items=cart_items, total_price=total_price, user_id=user_id)
 
 
 @app.route('/confirmation')
