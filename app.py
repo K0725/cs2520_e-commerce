@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import sqlite3, hashlib, os
 from werkzeug.utils import secure_filename
 
@@ -10,6 +10,9 @@ def login():
     # Get the form data from the request object
     username = request.form['username']
     password = request.form['password']
+
+    # Hash the password using the same method used during user creation
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     # Connect to the SQLite database and create a cursor object
     conn = sqlite3.connect('database.db')
@@ -24,7 +27,7 @@ def login():
     # If a user with the submitted username was found in the database
     if user is not None:
         # Check if the submitted password matches the password in the database
-        if password == user[1]:  # user[1] contains the password value
+        if hashed_password == user[1]:  # user[1] contains the hashed password value
             # If the credentials are valid, store the user_id in the session and redirect to the home page
             session['user_id'] = user[0]  # user[0] contains the user_id
             return redirect(url_for('home'))
@@ -63,21 +66,33 @@ def create_user():
             cursor.execute('''INSERT INTO users (username, password)
                             VALUES (?, ?)''',
                             (username, password))
+
+            # Commit the changes to the database and close the connection
+            conn.commit()
+            conn.close()
+
+            # Set the message variable
+            message = 'User created successfully!'
+
+            # Return the template with the message variable
+            return redirect(url_for('login_form', message=message))
+
         except sqlite3.Error as error:
             print("Failed to insert data into sqlite table", error)
 
-        # Commit the changes to the database and close the connection
-        conn.commit()
-        conn.close()
+            # If there's an error, rollback any changes
+            conn.rollback()
+            conn.close()
 
-        # Set the message variable
-        message = 'User created successfully!'
+            # Set the error message
+            error_message = 'There was an error creating your account. Please try again.'
 
-        # Return the template with the message variable
-        return redirect(url_for('login_form', message=message))
+            # Redirect to the login page with the error message
+            return redirect(url_for('login_form', error_message=error_message))
 
     # If the request method is GET, just render the template without setting the message variable
     return render_template('create_user.html')
+
 
 @app.route('/home')
 def home():
@@ -94,6 +109,8 @@ def home():
 
     # Pass the recommended products to the template
     return render_template('home.html', recommended_products=recommended_products)
+
+
 
 @app.route('/product_details/<int:product_id>')
 def product_details(product_id):
@@ -180,7 +197,26 @@ def add_product():
 
     return render_template('add.html')
 
+@app.route('/deleteProduct/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    # Connect to the SQLite database and create a cursor object
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
 
+    # Delete the product from the "products" table
+    try:
+        cursor.execute('''DELETE FROM products WHERE productId = ?''', (product_id,))
+
+    except sqlite3.Error as error:
+        print("Failed to delete product from sqlite table", error)
+        return 'Failed to delete product', 400
+
+    # Commit the changes to the database and close the connection
+    conn.commit()
+    conn.close()
+
+    # Redirect the user back to the homepage after the product is deleted
+    return redirect(url_for('home'))
 
 @app.route('/add-to-cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
@@ -217,7 +253,10 @@ def view_cart():
     cart_items = cursor.fetchall()
 
     conn.close()
-    return render_template('cart.html', cart_items=cart_items, user_id=user_id)
+
+    
+    print(f"userId: {user_id}")
+    return render_template('cart.html', cart_items=cart_items, user_id=user_id, checkout_url=url_for('checkout', userId=user_id))
 
 
 @app.route('/remove-from-cart/<int:product_id>', methods=['POST'])
@@ -258,7 +297,7 @@ def checkout():
     cursor.execute('SELECT * FROM cart INNER JOIN products ON cart.productId = products.productId WHERE userId = ?', (user_id,))
     cart_items = cursor.fetchall()
 
-    total_price = sum(item['price'] for item in cart_items)
+    total_price = round(sum(item['price'] for item in cart_items), 2)
 
     conn.close()
 

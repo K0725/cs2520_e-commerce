@@ -4,7 +4,10 @@
 <title>create Product</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='add.css') }}">
 </head>
+
         <body>
+
+		{% include 'navbar.html' %}
         <h2>Add items</h2>
         <form action="/addProduct" method="POST" enctype="multipart/form-data">
         	Name: <input type="text" name="name"><br> 

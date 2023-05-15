@@ -8,7 +8,7 @@
 </head>
 <body>
    
-
+    {% include 'navbar.html' %}
         {% block content %}
         <h1>Checkout</h1>
         <table>
@@ -19,12 +19,12 @@
             {% for item in cart_items %}
             <tr>
                 <td>{{ item['name'] }}</td>
-                <td>{{ item['price'] }}</td>
+                <td>$ {{ item['price'] }}</td>
             </tr>
             {% endfor %}
             <tr>
                 <td>Total:</td>
-                <td>{{ total_price }}</td>
+                <td><Strong>${{ total_price }}</Strong></td>
             </tr>
         </table>
         <form method="post">
