@@ -1,4 +1,5 @@
-# cs2520_e-commerce
+# E-commerce Website for CS 2520
+## Language and Framework: Python, Flask, SQLite3, OS, Router, HTTP
 
 Steps of Cloning this project:
 
