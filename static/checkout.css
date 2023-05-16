@@ -44,10 +44,12 @@ body {
     margin-top: 10px;
     border: none;
     cursor: pointer;
-  }
-  
-  button:hover {
+    width: 100px;  /* adjust as needed */
+    height: 40px;  /* adjust as needed */
+}
+
+button:hover {
     background-color: blue;
     color: blue;
-  }
+}
   
